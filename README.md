@@ -29,9 +29,9 @@ office-eval:  agent reads API docs → agent writes code → VM executes
 
 One approach scales linearly with the designer's imagination. The other scales with the SDK.
 
-## Install
+## Install (for humans)
 
-Download `office-eval.exe` from [Releases](https://github.com/corvo007/officedit/releases) (43 MB, Windows x64).
+Download `office-eval.exe` from [Releases](https://github.com/corvo007/officedit/releases) (~43 MB, Windows x64).
 
 Or build from source:
 
@@ -42,6 +42,68 @@ dotnet publish -r win-x64 --self-contained \
   -p:IncludeAllContentForSelfExtract=true \
   -p:EnableCompressionInSingleFile=true \
   -o bin/publish
+```
+
+## Install (for AI agents)
+
+Give your agent these instructions to set up office-eval:
+
+### 1. Clone the repo (includes skill docs and API reference)
+
+```bash
+git clone --recursive https://github.com/corvo007/officedit.git
+```
+
+`--recursive` pulls the OpenXML SDK docs submodule.
+
+### 2. Get the binary
+
+**Option A — Download pre-built** (no .NET SDK needed):
+
+```bash
+# Detect platform and download latest release
+cd officedit
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+case "$ARCH" in aarch64|arm64) ARCH="arm64" ;; x86_64|amd64) ARCH="x64" ;; esac
+case "$OS" in darwin) RID="mac-$ARCH" ;; linux) RID="linux-$ARCH" ;; mingw*|msys*|cygwin*) RID="win-$ARCH" ;; esac
+
+gh release download v0.1.0 -p "office-eval-${RID}*" -D .
+chmod +x office-eval-* 2>/dev/null
+```
+
+**Option B — Build from source** (requires .NET 9 SDK):
+
+```bash
+cd officedit/src/office-eval
+dotnet publish -r win-x64 --self-contained \
+  -p:PublishSingleFile=true \
+  -p:IncludeAllContentForSelfExtract=true \
+  -p:EnableCompressionInSingleFile=true \
+  -o ../../bin
+```
+
+### 3. Read the skill document
+
+The agent should read `docs/skill.md` first — it contains:
+- **3 inviolable rules** (edit copies only, locate by paraId, verify after edit)
+- **Script templates** for Word / Excel / PPT
+- **Navigation table** pointing to examples, advanced operations, and pitfalls
+
+```
+docs/
+├── skill.md                ← Start here (~150 lines)
+├── examples-basic.md       ← 14 basic operation examples
+├── examples-advanced.md    ← 7 advanced examples (borders, SEQ fields, numbering...)
+├── pitfalls.md             ← Checklist + known pitfalls + compile errors
+├── open-xml-docs/          ← Microsoft's official how-to guides
+└── api-doc/                ← Full API reference (grep for class/property names)
+```
+
+### 4. Verify installation
+
+```bash
+office-eval -e "Console.WriteLine(\"office-eval is ready\");"
 ```
 
 ## Usage
