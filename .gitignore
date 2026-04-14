@@ -12,6 +12,4 @@ src/office-eval/obj/
 # Project-specific scripts (not part of office-eval)
 scripts/
 
-# Large cloned docs (users clone separately)
-docs/open-xml-docs/
-docs/api-doc/
+# open-xml-docs is a git submodule, not ignored

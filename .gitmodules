@@ -1,0 +1,3 @@
+[submodule "docs/open-xml-docs"]
+	path = docs/open-xml-docs
+	url = https://github.com/OfficeDev/open-xml-docs.git
