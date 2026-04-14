@@ -1,0 +1,91 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+            artifact: office-eval-win-x64.exe
+          - os: windows-latest
+            rid: win-arm64
+            artifact: office-eval-win-arm64.exe
+          - os: ubuntu-latest
+            rid: linux-x64
+            artifact: office-eval-linux-x64
+          - os: ubuntu-latest
+            rid: linux-arm64
+            artifact: office-eval-linux-arm64
+          - os: macos-latest
+            rid: osx-x64
+            artifact: office-eval-mac-x64
+          - os: macos-latest
+            rid: osx-arm64
+            artifact: office-eval-mac-arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Build
+        run: dotnet build src/office-eval/office-eval.csproj -c Release
+
+      - name: Test inline execution
+        run: dotnet run --project src/office-eval/office-eval.csproj -- -e "Console.WriteLine(\"ok\");"
+
+      - name: Publish self-contained
+        run: >
+          dotnet publish src/office-eval/office-eval.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained
+          -p:PublishSingleFile=true
+          -p:IncludeAllContentForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -o publish
+
+      - name: Rename artifact
+        shell: bash
+        run: |
+          if [[ "${{ matrix.rid }}" == win-* ]]; then
+            mv publish/office-eval.exe "publish/${{ matrix.artifact }}"
+          else
+            mv publish/office-eval "publish/${{ matrix.artifact }}"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: publish/${{ matrix.artifact }}
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/*
