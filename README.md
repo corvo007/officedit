@@ -99,28 +99,31 @@ More examples in [`examples/`](examples/).
 
 ```
 officedit/
-├── src/office-eval/         # Source code (Program.cs + .csproj)
-├── examples/                # Example .csx scripts
+├── src/office-eval/              # Source code (Program.cs + .csproj, ~130 lines)
+├── examples/                     # Example .csx scripts
 ├── docs/
-│   ├── skill.md             # Agent skill document (usage guide + examples + pitfalls)
-│   ├── open-xml-docs/       # Microsoft's official OpenXML SDK how-to guides
-│   ├── api-doc/             # XML API reference extracted from NuGet package
-│   └── plans/               # Design documents
+│   ├── skill.md                  # Agent entry point (~150 lines): rules, templates, navigation
+│   ├── examples-basic.md         # 14 basic operation examples
+│   ├── examples-advanced.md      # 7 advanced operation examples (borders, subscript, SEQ fields, numbering)
+│   ├── pitfalls.md               # Workflow checklist + pitfall records + common errors
+│   ├── open-xml-docs/            # Microsoft's official OpenXML SDK how-to guides (git clone)
+│   ├── api-doc/                  # XML API reference extracted from NuGet package
+│   └── plans/                    # Design documents
 └── README.md
 ```
 
 ## For AI agents
 
-The [`docs/skill.md`](docs/skill.md) file is designed as an agent skill entry point:
+The doc system is layered — agents read only what they need:
 
-1. **Operational rules** — edit copies only, locate by paraId, verify after editing
-2. **Script templates** — Word / Excel / PPT boilerplate ready to copy
-3. **15 real-world examples** — from actual thesis editing production use
-4. **Pitfall records** — lessons from real data corruption incidents
-5. **Workflow checklist** — pre/post editing verification steps
-6. **Reference pointers** — advanced operations → `open-xml-docs/`, API lookup → `api-doc/`
-
-For advanced operations, agents consult `docs/open-xml-docs/` (Microsoft's how-to guides). For API signatures, grep `docs/api-doc/DocumentFormat.OpenXml.xml`.
+| File | Lines | When to read |
+|------|-------|-------------|
+| [`skill.md`](docs/skill.md) | ~150 | **Always** — rules, templates, key concepts |
+| [`examples-basic.md`](docs/examples-basic.md) | ~400 | Basic operations (replace, query, delete, read table/comments) |
+| [`examples-advanced.md`](docs/examples-advanced.md) | ~500 | Complex operations (borders, subscript, cross-Run, SEQ fields, numbering) |
+| [`pitfalls.md`](docs/pitfalls.md) | ~170 | Before editing — checklist, known pitfalls, compile errors |
+| `open-xml-docs/` | — | On demand — Microsoft's how-to guides for operations not in examples |
+| `api-doc/` | — | On demand — grep for class/property names |
 
 ## License
 

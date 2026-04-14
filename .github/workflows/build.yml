@@ -44,7 +44,8 @@ jobs:
         run: dotnet build src/office-eval/office-eval.csproj -c Release
 
       - name: Test inline execution
-        run: dotnet run --project src/office-eval/office-eval.csproj -- -e "Console.WriteLine(\"ok\");"
+        shell: bash
+        run: dotnet run --project src/office-eval/office-eval.csproj -- -e 'Console.WriteLine("ok");'
 
       - name: Publish self-contained
         run: >
