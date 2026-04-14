@@ -1,0 +1,20 @@
+bin/
+obj/
+*.pdb
+*.user
+*.suo
+.vs/
+
+# Build artifacts
+src/office-eval/bin/
+src/office-eval/obj/
+scripts/ThesisEditor/bin/
+scripts/ThesisEditor/obj/
+
+# Old backups
+scripts/ThesisEditor/Program.cs.bak*
+scripts/ThesisEditor/Program.cs.main
+
+# Large cloned docs (users clone separately)
+docs/open-xml-docs/
+docs/api-doc/
