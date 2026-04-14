@@ -8,12 +8,9 @@ obj/
 # Build artifacts
 src/office-eval/bin/
 src/office-eval/obj/
-scripts/ThesisEditor/bin/
-scripts/ThesisEditor/obj/
 
-# Old backups
-scripts/ThesisEditor/Program.cs.bak*
-scripts/ThesisEditor/Program.cs.main
+# Project-specific scripts (not part of office-eval)
+scripts/
 
 # Large cloned docs (users clone separately)
 docs/open-xml-docs/
