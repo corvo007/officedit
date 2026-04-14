@@ -58,30 +58,18 @@ git clone --recursive https://github.com/corvo007/officedit.git
 
 ### 2. Get the binary
 
-**Option A — Download pre-built** (no .NET SDK needed):
+Download the correct binary for the current platform from the [latest release](https://github.com/corvo007/officedit/releases/latest). Available builds:
 
-```bash
-# Detect platform and download latest release
-cd officedit
-OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-ARCH=$(uname -m)
-case "$ARCH" in aarch64|arm64) ARCH="arm64" ;; x86_64|amd64) ARCH="x64" ;; esac
-case "$OS" in darwin) RID="mac-$ARCH" ;; linux) RID="linux-$ARCH" ;; mingw*|msys*|cygwin*) RID="win-$ARCH" ;; esac
+| Platform | File |
+|----------|------|
+| Windows x64 | `office-eval-win-x64.exe` |
+| Windows ARM64 | `office-eval-win-arm64.exe` |
+| Linux x64 | `office-eval-linux-x64` |
+| Linux ARM64 | `office-eval-linux-arm64` |
+| macOS x64 | `office-eval-mac-x64` |
+| macOS ARM64 | `office-eval-mac-arm64` |
 
-gh release download v0.1.0 -p "office-eval-${RID}*" -D .
-chmod +x office-eval-* 2>/dev/null
-```
-
-**Option B — Build from source** (requires .NET 9 SDK):
-
-```bash
-cd officedit/src/office-eval
-dotnet publish -r win-x64 --self-contained \
-  -p:PublishSingleFile=true \
-  -p:IncludeAllContentForSelfExtract=true \
-  -p:EnableCompressionInSingleFile=true \
-  -o ../../bin
-```
+Use whatever download tool is available in the environment (`curl`, `wget`, `gh`, `Invoke-WebRequest`, browser, etc.). Place the binary somewhere on `PATH` or reference it by full path.
 
 ### 3. Read the skill document
 
